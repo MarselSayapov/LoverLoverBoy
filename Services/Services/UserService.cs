@@ -1,5 +1,5 @@
 ﻿using Domain.Exceptions;
-using Infrastructure.Data.Interfaces;
+using Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Services.Interfaces;

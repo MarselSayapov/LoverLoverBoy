@@ -9,7 +9,6 @@
     <ItemGroup>
       <Folder Include="Auth\" />
       <Folder Include="Enums\" />
-      <Folder Include="Interfaces\" />
     </ItemGroup>
 
     <ItemGroup>

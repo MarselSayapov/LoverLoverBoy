@@ -1,7 +1,7 @@
 ﻿using Domain.Entities;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 
-namespace Infrastructure.Data.Interfaces;
+namespace Domain.Interfaces;
 
 public interface IRepository<T> where T : EntityBase
 {

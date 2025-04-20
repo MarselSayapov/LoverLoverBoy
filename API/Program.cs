@@ -21,8 +21,13 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 
-app.UseSwaggerUI(options => { options.SwaggerEndpoint("/openapi/v1.json", "OpenAPI V1"); });
-app.UseExceptionHandler();
-app.UseHttpsRedirection();
+app
+    .UseHttpsRedirection()
+    .UseExceptionHandler()
+    .UseSwaggerUI(options =>
+    {
+        options.SwaggerEndpoint("/openapi/v1.json", "OpenAPI V1");
+    });
+
 app.MapControllers();
 app.Run();
