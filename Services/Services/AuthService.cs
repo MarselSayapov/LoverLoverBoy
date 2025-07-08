@@ -6,7 +6,6 @@ using Microsoft.Extensions.Logging;
 using Services.Interfaces;
 using Services.Models.Auth.Requests;
 using Services.Models.Auth.Responses;
-using Services.Models.User.Responses;
 
 namespace Services.Services;
 
@@ -35,17 +34,10 @@ public class AuthService(
                 PasswordHash = hashedPassword,
             };
             await userRepository.CreateAsync(user);
+            
+            var (token, refreshToken) = await jwtService.GetNewAccessTokenWithRefreshAsync(user);
+            return new AuthResponse(token, refreshToken);
 
-            return new AuthResponse
-            {
-                Token = jwtService.GenerateToken(requestDto.Login, requestDto.Email, user.Id),
-                User = new UserResponse
-                {
-                    Id = user.Id,
-                    Email = user.Email,
-                    Login = user.Login
-                }
-            };
         }
         catch (DuplicateException)
         {
@@ -74,15 +66,14 @@ public class AuthService(
             throw new Exception();
         }
 
-        return new AuthResponse
-        {
-            Token = jwtService.GenerateToken(user.Login, user.Email, user.Id),
-            User = new UserResponse
-            {
-                Id = user.Id,
-                Email = user.Email,
-                Login = user.Login
-            }
-        };
+        var (token, refreshToken) = await jwtService.GetNewAccessTokenWithRefreshAsync(user);
+        return new AuthResponse(token, refreshToken);
+    }
+
+    public async Task<RefreshTokenResponse> RefreshTokenAsync(RefreshTokenRequest requestDto)
+    {
+        (string token, string refreshToken) =
+            await jwtService.GetRefreshTokenAsync(requestDto.Token, requestDto.RefreshToken);
+        return new RefreshTokenResponse(token, refreshToken);
     }
 }

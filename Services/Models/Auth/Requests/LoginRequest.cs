@@ -1,3 +1,3 @@
 ﻿namespace Services.Models.Auth.Requests;
 
-public record LoginRequest(string Login, string Password);
+public sealed record LoginRequest(string Login, string Password);

@@ -1,6 +1,7 @@
 ﻿using Domain.Interfaces;
 using Infrastructure.Contexts;
 using Infrastructure.Data.Repositories;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -13,6 +14,7 @@ public static class InfrastructureStartup
     {
         services.AddScoped(typeof(IRepository<>), typeof(RepositoryBase<>));
         services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
         return services;
     }
 
@@ -21,5 +23,13 @@ public static class InfrastructureStartup
         var connectionString = configuration.GetConnectionString("DefaultConnection");
         builder.AddDbContext<ApplicationContext>(options => options.UseNpgsql(connectionString));
         return builder;
+    }
+    
+    public static async Task UseInfrastructureAsync(this WebApplication app)
+    {
+        using var scope = app.Services.CreateScope();
+        var db = scope.ServiceProvider.GetRequiredService<ApplicationContext>();
+
+        await db.Database.MigrateAsync();
     }
 }
