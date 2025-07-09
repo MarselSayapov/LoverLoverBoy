@@ -1,14 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace Domain.Entities;
+﻿namespace Domain.Entities;
 
 public class User : EntityBase
 {
-    [Required]
     public string Login { get; set; }
-    [Required]
     public string PasswordHash { get; set; }
-    [Required]
     public string Email { get; set; }
+    public ICollection<Project> Projects { get; set; } = new List<Project>();
+    public ICollection<TaskItem> AssignedTasks { get; set; } = new List<TaskItem>();
     
 }
