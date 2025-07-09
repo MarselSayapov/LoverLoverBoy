@@ -4,17 +4,17 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Infrastructure.Contexts.Configurations;
 
-public class TaskTagsConfiguration : IEntityTypeConfiguration<TaskTagItem>
+public class TaskTagsConfiguration : IEntityTypeConfiguration<TicketTags>
 {
-    public void Configure(EntityTypeBuilder<TaskTagItem> builder)
+    public void Configure(EntityTypeBuilder<TicketTags> builder)
     {
         builder.ToTable("TaskTags");
         
         builder.HasKey(taskTag => new { taskTag.TaskId, taskTag.TagId });
 
         builder
-            .HasOne(taskTag => taskTag.Task)
-            .WithMany(task => task.TaskTags)
+            .HasOne(taskTag => taskTag.Ticket)
+            .WithMany(task => task.TicketTags)
             .HasForeignKey(taskTag => taskTag.TaskId);
         
         builder

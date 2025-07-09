@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Services.Interfaces;
 using Services.Models.Auth.Requests;
+using Services.Models.Auth.Responses;
 
 namespace API.Controllers;
 
@@ -14,10 +15,8 @@ public class AuthController(IAuthService authService) : ControllerBase
     /// <param name="requestDto">Request-объект</param>
     /// <returns>JWT token и Refresh Token</returns>
     [HttpPost("register")]
-    public async Task<IActionResult> Register(RegisterRequest requestDto)
-    {
-        return Ok(await authService.RegisterAsync(requestDto));
-    }
+    [ProducesResponseType(typeof(AuthResponse), 200)]
+    public async Task<IActionResult> Register(RegisterRequest requestDto) => Ok(await authService.RegisterAsync(requestDto));
     
     /// <summary>
     /// Авторизация пользователя
@@ -25,10 +24,9 @@ public class AuthController(IAuthService authService) : ControllerBase
     /// <param name="requestDto">Request-объект</param>
     /// <returns>JWT token и Refresh Token</returns>
     [HttpPost("login")]
-    public async Task<IActionResult> Login([FromBody] LoginRequest requestDto)
-    {
-        return Ok(await authService.LoginAsync(requestDto));
-    }
+    [ProducesResponseType(typeof(AuthResponse), 200)]
+    [ProducesResponseType(404)]
+    public async Task<IActionResult> Login([FromBody] LoginRequest requestDto) => Ok(await authService.LoginAsync(requestDto));
 
     /// <summary>
     /// Обновление токена
@@ -36,9 +34,7 @@ public class AuthController(IAuthService authService) : ControllerBase
     /// <param name="requestDto">Request-объект</param>
     /// <returns>Обновленный JWT Token и новый Refresh Token</returns>
     [HttpPost("refresh")]
-    public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenRequest requestDto)
-    {
-        return Ok(await authService.RefreshTokenAsync(requestDto));
-    }
+    [ProducesResponseType(typeof(RefreshTokenResponse), 200)]
+    public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenRequest requestDto) => Ok(await authService.RefreshTokenAsync(requestDto));
 
 }

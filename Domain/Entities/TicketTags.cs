@@ -1,9 +1,9 @@
 ﻿namespace Domain.Entities;
 
-public class TaskTagItem
+public class TicketTags
 {
     public Guid TaskId { get; set; }
-    public TaskItem Task { get; set; }
+    public Ticket Ticket { get; set; }
     public Guid TagId { get; set; }
     public Tag Tag { get; set; }
 }

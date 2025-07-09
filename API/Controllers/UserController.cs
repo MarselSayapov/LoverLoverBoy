@@ -20,11 +20,8 @@ public class UserController(IUserService userService) : ControllerBase
     /// <returns>Response-модели пользователей, их количество и параметры пагинации</returns>
     [HttpGet]
     [ProducesResponseType(typeof(GetAllResponse<UserResponse>), 200)]
-    public async Task<IActionResult> GetAll([FromQuery] GetAllRequest requestDto)
-    {
-        var result = await userService.GetAllAsync(requestDto);
-        return Ok(result);
-    }
+    public async Task<IActionResult> GetAll([FromQuery] GetAllRequest requestDto) =>
+        Ok(await userService.GetAllAsync(requestDto));
 
     /// <summary>
     /// Получение пользователя по Id
@@ -34,11 +31,7 @@ public class UserController(IUserService userService) : ControllerBase
     [HttpGet("{id:guid}")]
     [ProducesResponseType(typeof(UserResponse), 200)]
     [ProducesResponseType(404)]
-    public async Task<IActionResult> Get(Guid id)
-    {
-        var result = await userService.GetByIdAsync(id);
-        return Ok(result);
-    }
+    public async Task<IActionResult> Get(Guid id) => Ok(await userService.GetByIdAsync(id));
 
     /// <summary>
     /// Обновление пользователя
@@ -49,11 +42,7 @@ public class UserController(IUserService userService) : ControllerBase
     [HttpPut("{id:guid}")]
     [ProducesResponseType(typeof(UserResponse), 200)]
     [ProducesResponseType(404)]
-    public async Task<IActionResult> Update(Guid id, [FromBody] UserRequest requestDto)
-    {
-        var result = await userService.UpdateAsync(requestDto);
-        return Ok(result);
-    }
+    public async Task<IActionResult> Update(Guid id, [FromBody] UserRequest requestDto) => Ok(await userService.UpdateAsync(requestDto));
 
     /// <summary>
     /// Удаление пользователя

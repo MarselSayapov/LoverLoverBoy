@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Infrastructure.Contexts.Configurations;
 
-public class TaskItemConfiguration : IEntityTypeConfiguration<TaskItem>
+public class TaskItemConfiguration : IEntityTypeConfiguration<Ticket>
 {
-    public void Configure(EntityTypeBuilder<TaskItem> builder)
+    public void Configure(EntityTypeBuilder<Ticket> builder)
     {
         builder.ToTable("Tasks");
         
@@ -17,12 +17,12 @@ public class TaskItemConfiguration : IEntityTypeConfiguration<TaskItem>
         
         builder
             .HasOne(task => task.Project)
-            .WithMany(project => project.Tasks)
+            .WithMany(project => project.Tickets)
             .HasForeignKey(task => task.ProjectId);
 
         builder
             .HasOne(task => task.AssignedUser)
-            .WithMany(user => user.AssignedTasks)
+            .WithMany(user => user.AssignedTickets)
             .HasForeignKey(task => task.AssignedUserId);
     }
 }

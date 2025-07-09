@@ -6,6 +6,6 @@ public class User : EntityBase
     public string PasswordHash { get; set; }
     public string Email { get; set; }
     public ICollection<Project> Projects { get; set; } = new List<Project>();
-    public ICollection<TaskItem> AssignedTasks { get; set; } = new List<TaskItem>();
+    public ICollection<Ticket> AssignedTickets { get; set; } = new List<Ticket>();
     
 }

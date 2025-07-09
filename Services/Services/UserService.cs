@@ -14,23 +14,24 @@ public class UserService(IUserRepository userRepository, ILogger<UserService> lo
 {
     public async Task<GetAllResponse<UserResponse>> GetAllAsync(GetAllRequest requestDto)
     {
-        var result = await userRepository.GetAll()
+        var result = userRepository.GetAll()
             .AsNoTracking()
             .OrderBy(user => user.Id)
-            .Skip((requestDto.PageNumber - 1) * requestDto.PageSize)
-            .Take(requestDto.PageSize)
             .Select(user => new UserResponse
             {
                 Id = user.Id,
                 Email = user.Email,
                 Login = user.Login,
-            })
-            .ToListAsync();
-
+            });
+        
+        var count = result.Count();
+        
+        result = result.Skip((requestDto.PageNumber - 1) * requestDto.PageSize)
+            .Take(requestDto.PageSize);
         return new GetAllResponse<UserResponse>
         {
-            Data = result,
-            Count = result.Count,
+            Data = await result.ToListAsync(),
+            Count = count,
             PageSize = requestDto.PageSize,
             PageNumber = requestDto.PageNumber
         };
