@@ -2,13 +2,12 @@
 
 public static class ApiStartup
 {
-    public static IServiceCollection AddApi(this IServiceCollection services)
+    public static void AddApi(this IServiceCollection services)
     {
         services.AddOpenApi();
         services.AddControllers();
         
         services.AddEndpointsApiExplorer();
-        return services;
     }
 
     public static void UseApi(this WebApplication app)

@@ -15,6 +15,9 @@ public static class InfrastructureStartup
         services.AddScoped(typeof(IRepository<>), typeof(RepositoryBase<>));
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
+        services.AddScoped<IProjectRepository, ProjectRepository>();
+        services.AddScoped<ITicketRepository, TicketRepository>();
+        services.AddScoped<ITagRepository, TagRepository>();
         return services;
     }
 
@@ -29,7 +32,7 @@ public static class InfrastructureStartup
     {
         using var scope = app.Services.CreateScope();
         var db = scope.ServiceProvider.GetRequiredService<ApplicationContext>();
-
-        await db.Database.MigrateAsync();
+        
+        await db.Database.EnsureCreatedAsync();
     }
 }

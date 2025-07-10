@@ -6,9 +6,8 @@ namespace Services.Extensions;
 
 public static class ConfigureExtension
 {
-    public static WebApplicationBuilder ConfigureOptions(this WebApplicationBuilder builder)
+    public static void ConfigureOptions(this WebApplicationBuilder builder)
     {
         builder.Services.Configure<AuthOptions>(builder.Configuration.GetSection("AuthOptions"));
-        return builder;
     }
 }
