@@ -18,7 +18,10 @@ public class ProjectController(IProjectService service) : ControllerBase
     /// <returns>Response-модель списка проектов</returns>
     [HttpGet]
     [ProducesResponseType(typeof(GetAllResponse<ProjectResponse>), 200)]
-    public async Task<IActionResult> GetAll([FromQuery] GetAllRequest requestDto) => Ok(await service.GetAllAsync(requestDto));
+    public async Task<IActionResult> GetAll([FromQuery] GetAllRequest requestDto)
+    {
+        return Ok(await service.GetAllAsync(requestDto));
+    }
 
     /// <summary>
     /// Получение проекта по Guid
@@ -27,7 +30,10 @@ public class ProjectController(IProjectService service) : ControllerBase
     /// <returns>Response-модель проекта</returns>
     [HttpGet("{id:guid}")]
     [ProducesResponseType(typeof(GetAllResponse<ProjectResponse>), 200)]
-    public async Task<IActionResult> Get(Guid id) => Ok(await service.GetByIdAsync(id));
+    public async Task<IActionResult> Get(Guid id)
+    {
+        return Ok(await service.GetByIdAsync(id));
+    }
 
     /// <summary>
     /// Создание нового проекта
@@ -39,10 +45,10 @@ public class ProjectController(IProjectService service) : ControllerBase
     public async Task<IActionResult> Post([FromBody] CreateProjectRequest requestDto)
     {
         var result = await service.CreateAsync(requestDto);
-        
+
         return CreatedAtAction(nameof(Get), new { id = result.Id }, result);
     }
-    
+
     /// <summary>
     /// Обновление существующего проекта
     /// </summary>
@@ -51,7 +57,10 @@ public class ProjectController(IProjectService service) : ControllerBase
     /// <returns>Response-модель проекта</returns>
     [HttpPut("{id:guid}")]
     [ProducesResponseType(typeof(GetAllResponse<ProjectResponse>), 200)]
-    public async Task<IActionResult> Put(Guid id, [FromBody] UpdateProjectRequest requestDto) => Ok(await  service.UpdateAsync(id, requestDto));
+    public async Task<IActionResult> Put(Guid id, [FromBody] UpdateProjectRequest requestDto)
+    {
+        return Ok(await service.UpdateAsync(id, requestDto));
+    }
 
     /// <summary>
     /// Удаление проекта
@@ -63,7 +72,7 @@ public class ProjectController(IProjectService service) : ControllerBase
     public async Task<IActionResult> Delete(Guid id)
     {
         await service.DeleteAsync(id);
-        
+
         return NoContent();
     }
 }

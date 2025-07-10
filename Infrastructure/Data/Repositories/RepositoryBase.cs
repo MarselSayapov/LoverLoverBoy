@@ -1,6 +1,7 @@
 ﻿using Domain.Entities;
 using Domain.Interfaces;
 using Infrastructure.Contexts;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace Infrastructure.Data.Repositories;
@@ -10,7 +11,7 @@ public class RepositoryBase<T>(ApplicationContext context) : IRepository<T>
 {
     public virtual IQueryable<T> GetAll()
     {
-        return context.Set<T>();
+        return context.Set<T>().AsNoTracking();
     }
 
     public virtual async Task<T?> GetByIdAsync(Guid id)

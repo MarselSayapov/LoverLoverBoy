@@ -2,6 +2,7 @@
 using Services.Models.GetAll.Responses;
 using Services.Models.Project.Request;
 using Services.Models.Project.Response;
+using Services.Models.Task.Request;
 
 namespace Services.Interfaces;
 

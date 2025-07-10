@@ -7,6 +7,7 @@ namespace Services.Interfaces;
 
 public interface ITicketService
 {
+    Task<TicketResponse> SetDeadlineOrAssigneAsync(Guid id, PatchTicketRequest requestDto);
     Task<GetAllResponse<TicketResponse>> GetAllAsync(GetAllRequest requestDto);
     Task<TicketResponse> GetByIdAsync(Guid id);
     Task<TicketResponse> CreateAsync(CreateTicketRequest requestDto);

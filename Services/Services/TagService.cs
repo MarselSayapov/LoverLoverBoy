@@ -18,7 +18,6 @@ public class TagService(ITagRepository repository, ILogger<TagService> logger) :
         try
         {
             var query = repository.GetAll()
-                .AsNoTracking()
                 .Select(tag => new TagResponse(tag.Id, tag.Name));
         
             var count = query.Count();
@@ -80,6 +79,8 @@ public class TagService(ITagRepository repository, ILogger<TagService> logger) :
         }
         
         tag.Name = requestDto.Name;
+        
+        await repository.UpdateAsync(tag);
 
         return new TagResponse(tag.Id, tag.Name);
     }

@@ -15,7 +15,6 @@ public class UserService(IUserRepository userRepository, ILogger<UserService> lo
     public async Task<GetAllResponse<UserResponse>> GetAllAsync(GetAllRequest requestDto)
     {
         var result = userRepository.GetAll()
-            .AsNoTracking()
             .OrderBy(user => user.Id)
             .Select(user => new UserResponse
             {

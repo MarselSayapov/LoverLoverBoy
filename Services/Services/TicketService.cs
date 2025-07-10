@@ -12,12 +12,37 @@ using Services.Models.Task.Response;
 
 namespace Services.Services;
 
-public class TicketService(ITicketRepository repository, ILogger<TicketService> logger) : ITicketService
+public class TicketService(ITicketRepository ticketRepository, ILogger<TicketService> logger) : ITicketService
 {
+    public async Task<TicketResponse> SetDeadlineOrAssigneAsync(Guid id, PatchTicketRequest requestDto)
+    {
+        var ticket = await ticketRepository.GetByIdAsync(id);
+
+        if (ticket is null)
+        {
+            throw new NotFoundException("Ticket not found");
+        }
+
+        if (requestDto.Deadline.HasValue)
+        {
+            ticket.Deadline = requestDto.Deadline.Value;
+        }
+
+        if (requestDto.AssigneeId.HasValue)
+        {
+            ticket.AssignedUserId = requestDto.AssigneeId.Value;
+        }
+        
+        await ticketRepository.UpdateAsync(ticket);
+
+        return new TicketResponse(ticket.Id, ticket.Title, ticket.Description, ticket.Status, ticket.Deadline,
+            ticket.AssignedUserId, ticket.ProjectId,
+            ticket.TicketTags.Select(tag => new TagResponse(tag.Tag.Id, tag.Tag.Name)));
+    }
+
     public async Task<GetAllResponse<TicketResponse>> GetAllAsync(GetAllRequest requestDto)
     {
-        var query = repository.GetAll()
-            .AsNoTracking()
+        var query = ticketRepository.GetAll()
             .Select(ticket => new TicketResponse(ticket.Id, ticket.Title, ticket.Description,  ticket.Status, ticket.Deadline, ticket.AssignedUserId, ticket.ProjectId, ticket.TicketTags.Select(tag => new TagResponse(tag.Tag.Id, tag.Tag.Name))));
         
         var count = query.Count();
@@ -37,7 +62,7 @@ public class TicketService(ITicketRepository repository, ILogger<TicketService> 
     {
         try
         {
-            var ticket = await repository.GetByIdAsync(id);
+            var ticket = await ticketRepository.GetByIdAsync(id);
 
             if (ticket is null)
             {
@@ -59,7 +84,7 @@ public class TicketService(ITicketRepository repository, ILogger<TicketService> 
     {
         try
         {
-            var ticket = await repository.CreateAsync(new Ticket
+            var ticket = await ticketRepository.CreateAsync(new Ticket
             {
                 Title = requestDto.Title,
                 Description = requestDto.Description,
@@ -83,7 +108,7 @@ public class TicketService(ITicketRepository repository, ILogger<TicketService> 
     {
         try
         {
-            var ticket = await repository.GetByIdAsync(id);
+            var ticket = await ticketRepository.GetByIdAsync(id);
 
             if (ticket is null)
             {
@@ -95,6 +120,8 @@ public class TicketService(ITicketRepository repository, ILogger<TicketService> 
             ticket.Deadline = requestDto.Deadline;
             ticket.AssignedUserId = requestDto.AssignedUserId;
             ticket.ProjectId = requestDto.ProjectId;
+            
+            await ticketRepository.UpdateAsync(ticket);
             
             return new TicketResponse(ticket.Id, ticket.Title, ticket.Description, ticket.Status, ticket.Deadline,
                 ticket.AssignedUserId, ticket.ProjectId,
@@ -111,14 +138,14 @@ public class TicketService(ITicketRepository repository, ILogger<TicketService> 
     {
         try
         {
-            var ticket = await repository.GetByIdAsync(id);
+            var ticket = await ticketRepository.GetByIdAsync(id);
 
             if (ticket is null)
             {
                 throw new NotFoundException("Ticket now found");
             }
 
-            await repository.DeleteAsync(ticket);
+            await ticketRepository.DeleteAsync(ticket);
         }
         catch (Exception exception)
         {

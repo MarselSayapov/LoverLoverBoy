@@ -66,4 +66,11 @@ public class TicketController(ITicketService service) : ControllerBase
         
         return NoContent();
     }
+
+    [HttpPatch("{id:guid}/parameter")]
+    [ProducesResponseType(typeof(TicketResponse), 200)]
+    public async Task<IActionResult> Patch(Guid id, [FromBody] PatchTicketRequest requestDto)
+    {
+        return Ok(await service.SetDeadlineOrAssigneAsync(id,  requestDto));
+    }
 }

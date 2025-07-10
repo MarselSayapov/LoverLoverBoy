@@ -13,14 +13,13 @@ using Services.Models.Task.Response;
 
 namespace Services.Services;
 
-public class ProjectService(IProjectRepository repository, ILogger<ProjectService> logger) :  IProjectService
+public class ProjectService(IProjectRepository projectRepository,  ILogger<ProjectService> logger) :  IProjectService
 {
     public async Task<GetAllResponse<ProjectResponse>> GetAllAsync(GetAllRequest requestDto)
     {
         try
         {
-            var query = repository.GetAll()
-                .AsNoTracking()
+            var query = projectRepository.GetAll()
                 .Select(project => new ProjectResponse(project.Id, project.Name, project.OwnerId,
                     project.Tickets.Select(ticket => new ProjectTicketResponse(ticket.Title, ticket.Description, ticket.Status, ticket.Deadline,
                         ticket.AssignedUserId,
@@ -48,7 +47,7 @@ public class ProjectService(IProjectRepository repository, ILogger<ProjectServic
     {
         try
         {
-            var project = await repository.GetByIdAsync(id);
+            var project = await projectRepository.GetByIdAsync(id);
 
             if (project is null)
             {
@@ -71,7 +70,7 @@ public class ProjectService(IProjectRepository repository, ILogger<ProjectServic
     {
         try
         {
-            var project = await repository.CreateAsync(new Project
+            var project = await projectRepository.CreateAsync(new Project
             {
                 Name = requestDto.Name,
                 OwnerId = requestDto.OwnerId
@@ -93,7 +92,7 @@ public class ProjectService(IProjectRepository repository, ILogger<ProjectServic
     {
         try
         {
-            var project = await repository.GetByIdAsync(id);
+            var project = await projectRepository.GetByIdAsync(id);
 
             if (project is null)
             {
@@ -102,6 +101,8 @@ public class ProjectService(IProjectRepository repository, ILogger<ProjectServic
             
             project.Name = requestDto.Name;
             project.OwnerId = requestDto.OwnerId;
+            
+            await projectRepository.UpdateAsync(project);
 
             return new ProjectResponse(project.Id, project.Name, project.OwnerId, project.Tickets.Select(ticket =>
                 new ProjectTicketResponse(ticket.Title, ticket.Description, ticket.Status, ticket.Deadline,
@@ -119,14 +120,14 @@ public class ProjectService(IProjectRepository repository, ILogger<ProjectServic
     {
         try
         {
-            var project = await repository.GetByIdAsync(id);
+            var project = await projectRepository.GetByIdAsync(id);
 
             if (project is null)
             {
                 throw new NotFoundException("Project not found");
             }
         
-            await repository.DeleteAsync(project);
+            await projectRepository.DeleteAsync(project);
         }
         catch (Exception exception)
         {
