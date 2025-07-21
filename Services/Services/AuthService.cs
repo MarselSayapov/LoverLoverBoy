@@ -10,7 +10,7 @@ using Services.Models.Auth.Responses;
 namespace Services.Services;
 
 public class AuthService(
-    IUserRepository userRepository,
+    IUnitOfWork unitOfWork,
     IJwtService jwtService,
     IPasswordHasherService passwordHasherService,
     ILogger<AuthService> logger) : IAuthService
@@ -19,7 +19,7 @@ public class AuthService(
     {
         try
         {
-            if (userRepository.GetAll().Any(user => user.Email == requestDto.Email))
+            if (unitOfWork.Users.GetAll().Any(user => user.Email == requestDto.Email))
             {
                 throw new DuplicateException("Пользователь с таким Email уже существует.");
             }
@@ -33,7 +33,7 @@ public class AuthService(
                 Login = requestDto.Login,
                 PasswordHash = hashedPassword,
             };
-            await userRepository.CreateAsync(user);
+            await unitOfWork.Users.CreateAsync(user);
             
             var (token, refreshToken) = await jwtService.GetNewAccessTokenWithRefreshAsync(user);
             return new AuthResponse(token, refreshToken);
@@ -55,7 +55,7 @@ public class AuthService(
 
     public async Task<AuthResponse> LoginAsync(LoginRequest requestDto)
     {
-        var user = await userRepository.GetAll().FirstOrDefaultAsync(user => user.Login == requestDto.Login);
+        var user = await unitOfWork.Users.GetAll().FirstOrDefaultAsync(user => user.Login == requestDto.Login);
         if (user is null)
         {
             throw new NotFoundException($"Пользователь с Login: {requestDto.Login} не найден.");

@@ -1,6 +1,7 @@
 ﻿using Domain.Interfaces;
 using Infrastructure.Contexts;
 using Infrastructure.Data.Repositories;
+using Infrastructure.Data.UnitOfWork;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -18,6 +19,8 @@ public static class InfrastructureStartup
         services.AddScoped<IProjectRepository, ProjectRepository>();
         services.AddScoped<ITicketRepository, TicketRepository>();
         services.AddScoped<ITagRepository, TagRepository>();
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
+        
         return services;
     }
 
@@ -25,6 +28,7 @@ public static class InfrastructureStartup
     {
         var connectionString = configuration.GetConnectionString("DefaultConnection");
         builder.AddDbContext<ApplicationContext>(options => options.UseNpgsql(connectionString));
+        
         return builder;
     }
     

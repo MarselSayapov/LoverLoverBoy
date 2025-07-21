@@ -11,7 +11,7 @@ using Services.Interfaces;
 
 namespace Services.Services;
 
-public class JwtService(IOptions<AuthOptions> options, IUserRepository userRepository, IRefreshTokenRepository refreshTokenRepository) : IJwtService
+public class JwtService(IOptions<AuthOptions> options, IUnitOfWork unitOfWork) : IJwtService
 {
     public string GenerateToken(string login, string email, Guid userId)
     {
@@ -53,7 +53,7 @@ public class JwtService(IOptions<AuthOptions> options, IUserRepository userRepos
             throw new BadRequestException("Invalid token");
         }
         
-        var storedRefreshToken = await refreshTokenRepository.GetByTokenAsync(refreshToken);
+        var storedRefreshToken = await unitOfWork.RefreshTokens.GetByTokenAsync(refreshToken);
 
         if (storedRefreshToken is null)
         {
@@ -78,7 +78,7 @@ public class JwtService(IOptions<AuthOptions> options, IUserRepository userRepos
             throw new BadRequestException("Current user is not found");
         }
         
-        var user = await userRepository.GetByIdAsync(Guid.Parse(userId));
+        var user = await unitOfWork.Users.GetByIdAsync(Guid.Parse(userId));
 
         if (user is null)
         {
@@ -142,15 +142,15 @@ public class JwtService(IOptions<AuthOptions> options, IUserRepository userRepos
 
         if (!string.IsNullOrEmpty(existingRefreshToken))
         {
-            var existingToken = await refreshTokenRepository.GetByTokenAsync(existingRefreshToken);
+            var existingToken = await unitOfWork.RefreshTokens.GetByTokenAsync(existingRefreshToken);
 
             if (existingToken is not null)
             {
-                await refreshTokenRepository.DeleteAsync(existingToken);
+                await unitOfWork.RefreshTokens.DeleteAsync(existingToken);
             }
         }
         
-        await refreshTokenRepository.CreateAsync(refreshToken);
+        await unitOfWork.RefreshTokens.CreateAsync(refreshToken);
         
         return refreshToken.Token;
     }

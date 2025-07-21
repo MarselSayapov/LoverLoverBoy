@@ -11,13 +11,13 @@ using Services.Models.Tag.Response;
 
 namespace Services.Services;
 
-public class TagService(ITagRepository repository, ILogger<TagService> logger) : ITagService
+public class TagService(IUnitOfWork unitOfWork, ILogger<TagService> logger) : ITagService
 {
     public async Task<GetAllResponse<TagResponse>> GetAllAsync(GetAllRequest requestDto)
     {
         try
         {
-            var query = repository.GetAll()
+            var query = unitOfWork.Tags.GetAll()
                 .Select(tag => new TagResponse(tag.Id, tag.Name));
         
             var count = query.Count();
@@ -43,7 +43,7 @@ public class TagService(ITagRepository repository, ILogger<TagService> logger) :
     {
         try
         {
-            var tag = await repository.GetByIdAsync(id);
+            var tag = await unitOfWork.Tags.GetByIdAsync(id);
 
             if (tag is null)
             {
@@ -61,7 +61,7 @@ public class TagService(ITagRepository repository, ILogger<TagService> logger) :
 
     public async Task<TagResponse> CreateAsync(CreateTagRequest requestDto)
     {
-        var tag = await repository.CreateAsync(new Tag
+        var tag = await unitOfWork.Tags.CreateAsync(new Tag
         {
             Name = requestDto.Name
         });
@@ -71,7 +71,7 @@ public class TagService(ITagRepository repository, ILogger<TagService> logger) :
 
     public async Task<TagResponse> UpdateAsync(Guid id, UpdateTagRequest requestDto)
     {
-        var tag = await repository.GetByIdAsync(id);
+        var tag = await unitOfWork.Tags.GetByIdAsync(id);
 
         if (tag is null)
         {
@@ -80,20 +80,20 @@ public class TagService(ITagRepository repository, ILogger<TagService> logger) :
         
         tag.Name = requestDto.Name;
         
-        await repository.UpdateAsync(tag);
+        await unitOfWork.Tags.UpdateAsync(tag);
 
         return new TagResponse(tag.Id, tag.Name);
     }
 
     public async Task DeleteAsync(Guid id)
     {
-        var tag = await repository.GetByIdAsync(id);
+        var tag = await unitOfWork.Tags.GetByIdAsync(id);
 
         if (tag is null)
         {
             throw new NotFoundException("Tag not found");
         }
         
-        await repository.DeleteAsync(tag);
+        await unitOfWork.Tags.DeleteAsync(tag);
     }
 }

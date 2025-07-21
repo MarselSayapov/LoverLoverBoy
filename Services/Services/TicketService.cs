@@ -12,11 +12,11 @@ using Services.Models.Task.Response;
 
 namespace Services.Services;
 
-public class TicketService(ITicketRepository ticketRepository, ILogger<TicketService> logger) : ITicketService
+public class TicketService(IUnitOfWork unitOfWork, ILogger<TicketService> logger) : ITicketService
 {
     public async Task<TicketResponse> SetDeadlineOrAssigneAsync(Guid id, PatchTicketRequest requestDto)
     {
-        var ticket = await ticketRepository.GetByIdAsync(id);
+        var ticket = await unitOfWork.Tickets.GetByIdAsync(id);
 
         if (ticket is null)
         {
@@ -33,7 +33,7 @@ public class TicketService(ITicketRepository ticketRepository, ILogger<TicketSer
             ticket.AssignedUserId = requestDto.AssigneeId.Value;
         }
         
-        await ticketRepository.UpdateAsync(ticket);
+        await unitOfWork.Tickets.UpdateAsync(ticket);
 
         return new TicketResponse(ticket.Id, ticket.Title, ticket.Description, ticket.Status, ticket.Deadline,
             ticket.AssignedUserId, ticket.ProjectId,
@@ -42,7 +42,7 @@ public class TicketService(ITicketRepository ticketRepository, ILogger<TicketSer
 
     public async Task<GetAllResponse<TicketResponse>> GetAllAsync(GetAllRequest requestDto)
     {
-        var query = ticketRepository.GetAll()
+        var query = unitOfWork.Tickets.GetAll()
             .Select(ticket => new TicketResponse(ticket.Id, ticket.Title, ticket.Description,  ticket.Status, ticket.Deadline, ticket.AssignedUserId, ticket.ProjectId, ticket.TicketTags.Select(tag => new TagResponse(tag.Tag.Id, tag.Tag.Name))));
         
         var count = query.Count();
@@ -62,7 +62,7 @@ public class TicketService(ITicketRepository ticketRepository, ILogger<TicketSer
     {
         try
         {
-            var ticket = await ticketRepository.GetByIdAsync(id);
+            var ticket = await unitOfWork.Tickets.GetByIdAsync(id);
 
             if (ticket is null)
             {
@@ -84,7 +84,7 @@ public class TicketService(ITicketRepository ticketRepository, ILogger<TicketSer
     {
         try
         {
-            var ticket = await ticketRepository.CreateAsync(new Ticket
+            var ticket = await unitOfWork.Tickets.CreateAsync(new Ticket
             {
                 Title = requestDto.Title,
                 Description = requestDto.Description,
@@ -108,7 +108,7 @@ public class TicketService(ITicketRepository ticketRepository, ILogger<TicketSer
     {
         try
         {
-            var ticket = await ticketRepository.GetByIdAsync(id);
+            var ticket = await unitOfWork.Tickets.GetByIdAsync(id);
 
             if (ticket is null)
             {
@@ -121,7 +121,7 @@ public class TicketService(ITicketRepository ticketRepository, ILogger<TicketSer
             ticket.AssignedUserId = requestDto.AssignedUserId;
             ticket.ProjectId = requestDto.ProjectId;
             
-            await ticketRepository.UpdateAsync(ticket);
+            await unitOfWork.Tickets.UpdateAsync(ticket);
             
             return new TicketResponse(ticket.Id, ticket.Title, ticket.Description, ticket.Status, ticket.Deadline,
                 ticket.AssignedUserId, ticket.ProjectId,
@@ -138,14 +138,14 @@ public class TicketService(ITicketRepository ticketRepository, ILogger<TicketSer
     {
         try
         {
-            var ticket = await ticketRepository.GetByIdAsync(id);
+            var ticket = await unitOfWork.Tickets.GetByIdAsync(id);
 
             if (ticket is null)
             {
                 throw new NotFoundException("Ticket now found");
             }
 
-            await ticketRepository.DeleteAsync(ticket);
+            await unitOfWork.Tickets.DeleteAsync(ticket);
         }
         catch (Exception exception)
         {

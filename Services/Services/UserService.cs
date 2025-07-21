@@ -10,11 +10,11 @@ using Services.Models.User.Responses;
 
 namespace Services.Services;
 
-public class UserService(IUserRepository userRepository, ILogger<UserService> logger) : IUserService
+public class UserService(IUnitOfWork unitOfWork, ILogger<UserService> logger) : IUserService
 {
     public async Task<GetAllResponse<UserResponse>> GetAllAsync(GetAllRequest requestDto)
     {
-        var result = userRepository.GetAll()
+        var result = unitOfWork.Users.GetAll()
             .OrderBy(user => user.Id)
             .Select(user => new UserResponse
             {
@@ -40,7 +40,7 @@ public class UserService(IUserRepository userRepository, ILogger<UserService> lo
     {
         try
         {
-            var user = await userRepository.GetByIdAsync(id);
+            var user = await unitOfWork.Users.GetByIdAsync(id);
 
             if (user == null)
             {
@@ -71,7 +71,7 @@ public class UserService(IUserRepository userRepository, ILogger<UserService> lo
     {
         try
         {
-            var user = await userRepository.GetByEmailAsync(requestDto.Email);
+            var user = await unitOfWork.Users.GetByEmailAsync(requestDto.Email);
 
             if (user == null)
             {
@@ -83,7 +83,7 @@ public class UserService(IUserRepository userRepository, ILogger<UserService> lo
                 user.Login = requestDto.Login;
             }
         
-            await userRepository.UpdateAsync(user);
+            await unitOfWork.Users.UpdateAsync(user);
 
             return new UserResponse
             {
@@ -104,13 +104,13 @@ public class UserService(IUserRepository userRepository, ILogger<UserService> lo
     {
         try
         {
-            var user = await userRepository.GetByIdAsync(id);
+            var user = await unitOfWork.Users.GetByIdAsync(id);
             if (user == null)
             {
                 throw new NotFoundException($"Пользователь с Guid: {id} не найден.");
             }
             
-            await userRepository.DeleteAsync(user);
+            await unitOfWork.Users.DeleteAsync(user);
         }
         catch (Exception)
         {

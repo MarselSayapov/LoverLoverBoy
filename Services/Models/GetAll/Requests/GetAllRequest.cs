@@ -8,7 +8,7 @@ public class GetAllRequest
     public int PageSize
     {
         get => _pageSize;
-        set => _pageSize = value < 10 ? 1 : value;
+        set => _pageSize = value < 10 ? int.MaxValue : value;
     }
 
     public int PageNumber

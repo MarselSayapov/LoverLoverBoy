@@ -13,13 +13,13 @@ using Services.Models.Task.Response;
 
 namespace Services.Services;
 
-public class ProjectService(IProjectRepository projectRepository,  ILogger<ProjectService> logger) :  IProjectService
+public class ProjectService(IUnitOfWork unitOfWork,  ILogger<ProjectService> logger) :  IProjectService
 {
     public async Task<GetAllResponse<ProjectResponse>> GetAllAsync(GetAllRequest requestDto)
     {
         try
         {
-            var query = projectRepository.GetAll()
+            var query = unitOfWork.Projects.GetAll()
                 .Select(project => new ProjectResponse(project.Id, project.Name, project.OwnerId,
                     project.Tickets.Select(ticket => new ProjectTicketResponse(ticket.Title, ticket.Description, ticket.Status, ticket.Deadline,
                         ticket.AssignedUserId,
@@ -47,7 +47,7 @@ public class ProjectService(IProjectRepository projectRepository,  ILogger<Proje
     {
         try
         {
-            var project = await projectRepository.GetByIdAsync(id);
+            var project = await unitOfWork.Projects.GetByIdAsync(id);
 
             if (project is null)
             {
@@ -70,7 +70,7 @@ public class ProjectService(IProjectRepository projectRepository,  ILogger<Proje
     {
         try
         {
-            var project = await projectRepository.CreateAsync(new Project
+            var project = await unitOfWork.Projects.CreateAsync(new Project
             {
                 Name = requestDto.Name,
                 OwnerId = requestDto.OwnerId
@@ -92,7 +92,7 @@ public class ProjectService(IProjectRepository projectRepository,  ILogger<Proje
     {
         try
         {
-            var project = await projectRepository.GetByIdAsync(id);
+            var project = await unitOfWork.Projects.GetByIdAsync(id);
 
             if (project is null)
             {
@@ -102,7 +102,7 @@ public class ProjectService(IProjectRepository projectRepository,  ILogger<Proje
             project.Name = requestDto.Name;
             project.OwnerId = requestDto.OwnerId;
             
-            await projectRepository.UpdateAsync(project);
+            await unitOfWork.Projects.UpdateAsync(project);
 
             return new ProjectResponse(project.Id, project.Name, project.OwnerId, project.Tickets.Select(ticket =>
                 new ProjectTicketResponse(ticket.Title, ticket.Description, ticket.Status, ticket.Deadline,
@@ -120,14 +120,14 @@ public class ProjectService(IProjectRepository projectRepository,  ILogger<Proje
     {
         try
         {
-            var project = await projectRepository.GetByIdAsync(id);
+            var project = await unitOfWork.Projects.GetByIdAsync(id);
 
             if (project is null)
             {
                 throw new NotFoundException("Project not found");
             }
         
-            await projectRepository.DeleteAsync(project);
+            await unitOfWork.Projects.DeleteAsync(project);
         }
         catch (Exception exception)
         {
