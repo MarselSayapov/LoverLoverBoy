@@ -9,8 +9,8 @@ public class UserRepository(ApplicationContext context) : RepositoryBase<User>(c
 {
     private readonly ApplicationContext _context = context;
 
-    public async Task<User?> GetByEmailAsync(string email)
+    public User? GetByEmail(string email)
     {
-        return await _context.Users.FirstOrDefaultAsync(user => user.Email == email);
+        return _context.Users.FirstOrDefault(user => user.Email == email);
     }
 }

@@ -71,7 +71,12 @@ public class UserService(IUnitOfWork unitOfWork, ILogger<UserService> logger) : 
     {
         try
         {
-            var user = await unitOfWork.Users.GetByEmailAsync(requestDto.Email);
+            if (requestDto.Email is null)
+            {
+                throw new BadRequestException("Check email");
+            }
+            
+            var user = unitOfWork.Users.GetByEmail(requestDto.Email);
 
             if (user == null)
             {

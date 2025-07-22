@@ -125,12 +125,37 @@ public class UserServiceUnitTests
         {
             Email = "invalid-email@example.com",
             Login = "invalidLogin",
-            Password = "1231231312312312312"
-            
         };
         
         // Assert
-
         await Assert.ThrowsAsync<NotFoundException>(() => _userService.UpdateAsync(request));
+    }
+
+    [Fact]
+    public async Task UpdateUser_Should_UpdateUserLogin()
+    {
+        // Arrange
+        var request = new UserRequest
+        {
+            Email = "johnDoe@example.com",
+            Login = "zheny2004"
+        };
+
+        var user = new User
+        {
+            Id = Guid.NewGuid(),
+            Email = "johnDoe@example.com",
+            Login = "johnDoe",
+            PasswordHash = "afkmpafkmerkmferkmferkmnferknmf123213afjnjnk"
+        };
+
+        _userRepository.Setup(repo => repo.GetByEmail(request.Email)).Returns(user);
+        _userRepository.Setup(repo => repo.UpdateAsync(user)).Returns(Task.CompletedTask);
+        // Act
+        var result = await _userService.UpdateAsync(request);
+        
+        // Assert
+        Assert.NotNull(result);
+        Assert.Equal("zheny2004", result.Login);
     }
 }
