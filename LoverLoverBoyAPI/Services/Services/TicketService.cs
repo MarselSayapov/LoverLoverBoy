@@ -93,9 +93,9 @@ public class TicketService(IUnitOfWork unitOfWork, ILogger<TicketService> logger
                 AssignedUserId = requestDto.AssignedUserId
             });
             
-            return new TicketResponse(ticket.Entity.Id, ticket.Entity.Title, ticket.Entity.Description, ticket.Entity.Status, ticket.Entity.Deadline,
-                ticket.Entity.AssignedUserId, ticket.Entity.ProjectId,
-                ticket.Entity.TicketTags.Select(tag => new TagResponse(tag.Tag.Id, tag.Tag.Name)));
+            return new TicketResponse(ticket.Id, ticket.Title, ticket.Description, ticket.Status, ticket.Deadline,
+                ticket.AssignedUserId, ticket.ProjectId,
+                ticket.TicketTags.Select(tag => new TagResponse(tag.Tag.Id, tag.Tag.Name)));
         }
         catch (Exception exception)
         {

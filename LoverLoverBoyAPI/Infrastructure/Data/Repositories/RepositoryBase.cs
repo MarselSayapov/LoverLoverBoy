@@ -19,11 +19,11 @@ public class RepositoryBase<T>(ApplicationContext context) : IRepository<T>
         return await context.Set<T>().FindAsync(id);
     }
 
-    public virtual async Task<EntityEntry<T>> CreateAsync(T entity)
+    public virtual async Task<T> CreateAsync(T entity)
     {
         var entry = context.Set<T>().Add(entity);
         await context.SaveChangesAsync();
-        return entry;
+        return entry.Entity;
     }
 
     public virtual async Task UpdateAsync(T entity)

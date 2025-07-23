@@ -52,7 +52,10 @@ public class UserServiceUnitTests
         
         var mock = users.AsQueryable().BuildMock();
         
-        _userRepository.Setup(repo => repo.GetAll()).Returns(mock);
+        _userRepository
+            .Setup(repo => repo.GetAll())
+            .Returns(mock);
+        
         // Act
         var result = await _userService.GetAllAsync(request);
         
@@ -82,9 +85,12 @@ public class UserServiceUnitTests
             });
         }
         
-        var mock = users.AsQueryable().BuildMock();
+        var mock = users.AsQueryable()
+            .BuildMock();
         
-        _userRepository.Setup(repo => repo.GetAll()).Returns(mock);
+        _userRepository
+            .Setup(repo => repo.GetAll())
+            .Returns(mock);
         
         // Act
         var result = await _userService.GetAllAsync(request);
@@ -105,7 +111,9 @@ public class UserServiceUnitTests
             PasswordHash = "afkmpafkmerkmferkmferkmnferknmf123213afjnjnk"
         };
         
-        _userRepository.Setup(repo => repo.GetByIdAsync(user.Id)).ReturnsAsync(user);
+        _userRepository
+            .Setup(repo => repo.GetByIdAsync(user.Id))
+            .ReturnsAsync(user);
         
         // Act
 
@@ -149,8 +157,12 @@ public class UserServiceUnitTests
             PasswordHash = "afkmpafkmerkmferkmferkmnferknmf123213afjnjnk"
         };
 
-        _userRepository.Setup(repo => repo.GetByEmail(request.Email)).Returns(user);
-        _userRepository.Setup(repo => repo.UpdateAsync(user)).Returns(Task.CompletedTask);
+        _userRepository
+            .Setup(repo => repo.GetByEmail(request.Email))
+            .Returns(user);
+        _userRepository
+            .Setup(repo => repo.UpdateAsync(user))
+            .Returns(Task.CompletedTask);
         // Act
         var result = await _userService.UpdateAsync(request);
         

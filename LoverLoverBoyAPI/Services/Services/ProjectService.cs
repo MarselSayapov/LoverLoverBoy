@@ -76,7 +76,7 @@ public class ProjectService(IUnitOfWork unitOfWork,  ILogger<ProjectService> log
                 OwnerId = requestDto.OwnerId
             });
             
-            return new ProjectResponse(project.Entity.Id, project.Entity.Name, project.Entity.OwnerId, project.Entity.Tickets.Select(ticket =>
+            return new ProjectResponse(project.Id, project.Name, project.OwnerId, project.Tickets.Select(ticket =>
                 new ProjectTicketResponse(ticket.Title, ticket.Description, ticket.Status, ticket.Deadline,
                     ticket.AssignedUserId,
                     ticket.TicketTags.Select(tag => new TagResponse(tag.Tag.Id, tag.Tag.Name)))));

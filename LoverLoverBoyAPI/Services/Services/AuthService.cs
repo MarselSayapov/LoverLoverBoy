@@ -63,7 +63,7 @@ public class AuthService(
 
         if (!passwordHasherService.VerifyPassword(user.PasswordHash, requestDto.Password))
         {
-            throw new Exception();
+            throw new BadRequestException("Неправильный пароль!");
         }
 
         var (token, refreshToken) = await jwtService.GetNewAccessTokenWithRefreshAsync(user);

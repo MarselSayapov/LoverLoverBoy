@@ -66,7 +66,7 @@ public class TagService(IUnitOfWork unitOfWork, ILogger<TagService> logger) : IT
             Name = requestDto.Name
         });
         
-        return new TagResponse(tag.Entity.Id, tag.Entity.Name);
+        return new TagResponse(tag.Id, tag.Name);
     }
 
     public async Task<TagResponse> UpdateAsync(Guid id, UpdateTagRequest requestDto)
