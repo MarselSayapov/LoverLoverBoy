@@ -27,14 +27,14 @@ public class AuthServiceUnitTests
         _logger = new Mock<ILogger<AuthService>>();
         _passwordHasher = new Mock<IPasswordHasherService>();
         var unitOfWork = new Mock<IUnitOfWork>();
-        
+
         unitOfWork
             .Setup(uow => uow.Users)
             .Returns(_userRepository.Object);
         unitOfWork
             .Setup(uow => uow.RefreshTokens)
             .Returns(_refreshTokenRepository.Object);
-        
+
         _authService = new AuthService(unitOfWork.Object, _jwtService.Object, _passwordHasher.Object, _logger.Object);
     }
 
@@ -43,7 +43,7 @@ public class AuthServiceUnitTests
     {
         // Arrange
         var request = new RegisterRequest("johnDoe", "johnDoe@example.com", "admin");
-        
+
         var users = new List<User>();
         for (var i = 0; i < 30; i++)
         {
@@ -61,7 +61,7 @@ public class AuthServiceUnitTests
         _userRepository
             .Setup(repo => repo.GetAll())
             .Returns(mock);
-        
+
         // Assert
         await Assert.ThrowsAsync<DuplicateException>(() => _authService.RegisterAsync(request));
     }
@@ -83,7 +83,7 @@ public class AuthServiceUnitTests
                 PasswordHash = "afkmpafkmerkmferkmferkmnferknmf123213afjnjnk"
             });
         }
-        
+
         _userRepository
             .Setup(repo => repo.GetAll())
             .Returns(users.AsQueryable());
@@ -91,19 +91,19 @@ public class AuthServiceUnitTests
         _passwordHasher
             .Setup(repo => repo.HashPassword("password"))
             .Returns("hashedPassword");
-        
+
         _userRepository
             .Setup(repo => repo.CreateAsync(It.IsAny<User>()))
             .ReturnsAsync(new User());
-        
+
 
         _jwtService
             .Setup(js => js.GetNewAccessTokenWithRefreshAsync(It.IsAny<User>()))
             .ReturnsAsync(("access_token", "refresh_token"));
-        
+
         // Act
         var result = await _authService.RegisterAsync(request);
-        
+
         // Assert
         Assert.NotNull(result);
         Assert.Equal("access_token", result.Token);
@@ -128,22 +128,22 @@ public class AuthServiceUnitTests
         };
 
         var mock = users.AsQueryable().BuildMock();
-        
+
         _userRepository
             .Setup(repo => repo.GetAll())
             .Returns(mock);
-        
+
         _passwordHasher
             .Setup(hasher => hasher.VerifyPassword("hashedPassword", "password"))
             .Returns(true);
-        
+
         _jwtService
             .Setup(js => js.GetNewAccessTokenWithRefreshAsync(It.IsAny<User>()))
             .ReturnsAsync(("access_token", "refresh_token"));
-        
+
         // Act
         var result = await _authService.LoginAsync(request);
-        
+
         // Assert
         Assert.NotNull(result);
         Assert.Equal("access_token", result.Token);
@@ -152,7 +152,7 @@ public class AuthServiceUnitTests
 
     [Fact]
     public async Task Login_WithIncorrectPassword_Should_ThrowBadRequestException()
-    { 
+    {
         // Arrange
         var request = new LoginRequest("johnDoe", "password");
 
@@ -168,19 +168,19 @@ public class AuthServiceUnitTests
         };
 
         var mock = users.AsQueryable().BuildMock();
-        
+
         _userRepository
             .Setup(repo => repo.GetAll())
             .Returns(mock);
-        
+
         _passwordHasher
             .Setup(hasher => hasher.VerifyPassword("hashedPassword", "password"))
             .Returns(true);
-        
+
         _jwtService
             .Setup(js => js.GetNewAccessTokenWithRefreshAsync(It.IsAny<User>()))
             .ReturnsAsync(("access_token", "refresh_token"));
-        
+
         // Assert
         await Assert.ThrowsAsync<BadRequestException>(() => _authService.LoginAsync(request));
     }

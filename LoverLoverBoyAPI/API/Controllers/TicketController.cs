@@ -28,7 +28,7 @@ public class TicketController(ITicketService service) : ControllerBase
     [HttpGet("{id:guid}")]
     [ProducesResponseType(typeof(TicketResponse), 200)]
     public async Task<IActionResult> Get(Guid id) => Ok(await service.GetByIdAsync(id));
-    
+
     /// <summary>
     /// Создание задачи
     /// </summary>
@@ -39,10 +39,10 @@ public class TicketController(ITicketService service) : ControllerBase
     public async Task<IActionResult> Post([FromBody] CreateTicketRequest requestDto)
     {
         var result = await service.CreateAsync(requestDto);
-        
-        return CreatedAtAction(nameof(Get), new { id = result.Id},  result);
+
+        return CreatedAtAction(nameof(Get), new { id = result.Id }, result);
     }
-    
+
     /// <summary>
     /// Обновление существующей задачи
     /// </summary>
@@ -63,7 +63,7 @@ public class TicketController(ITicketService service) : ControllerBase
     public async Task<IActionResult> Delete(Guid id)
     {
         await service.DeleteAsync(id);
-        
+
         return NoContent();
     }
 
@@ -71,6 +71,6 @@ public class TicketController(ITicketService service) : ControllerBase
     [ProducesResponseType(typeof(TicketResponse), 200)]
     public async Task<IActionResult> Patch(Guid id, [FromBody] PatchTicketRequest requestDto)
     {
-        return Ok(await service.SetDeadlineOrAssigneAsync(id,  requestDto));
+        return Ok(await service.SetDeadlineOrAssigneAsync(id, requestDto));
     }
 }

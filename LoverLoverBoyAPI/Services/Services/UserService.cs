@@ -22,9 +22,9 @@ public class UserService(IUnitOfWork unitOfWork, ILogger<UserService> logger) : 
                 Email = user.Email,
                 Login = user.Login,
             });
-        
+
         var count = result.Count();
-        
+
         result = result.Skip((requestDto.PageNumber - 1) * requestDto.PageSize)
             .Take(requestDto.PageSize);
         return new GetAllResponse<UserResponse>
@@ -64,7 +64,7 @@ public class UserService(IUnitOfWork unitOfWork, ILogger<UserService> logger) : 
             logger.LogError("Произошла непредвиденная ошибка при поиске пользователя\n\tGuid: {}", id);
             throw;
         }
-        
+
     }
 
     public async Task<UserResponse> UpdateAsync(UserRequest requestDto)
@@ -75,7 +75,7 @@ public class UserService(IUnitOfWork unitOfWork, ILogger<UserService> logger) : 
             {
                 throw new BadRequestException("Check email");
             }
-            
+
             var user = unitOfWork.Users.GetByEmail(requestDto.Email);
 
             if (user == null)
@@ -87,7 +87,7 @@ public class UserService(IUnitOfWork unitOfWork, ILogger<UserService> logger) : 
             {
                 user.Login = requestDto.Login;
             }
-        
+
             await unitOfWork.Users.UpdateAsync(user);
 
             return new UserResponse
@@ -114,7 +114,7 @@ public class UserService(IUnitOfWork unitOfWork, ILogger<UserService> logger) : 
             {
                 throw new NotFoundException($"Пользователь с Guid: {id} не найден.");
             }
-            
+
             await unitOfWork.Users.DeleteAsync(user);
         }
         catch (Exception)

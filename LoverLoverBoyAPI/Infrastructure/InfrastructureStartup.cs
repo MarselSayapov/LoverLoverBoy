@@ -20,7 +20,7 @@ public static class InfrastructureStartup
         services.AddScoped<ITicketRepository, TicketRepository>();
         services.AddScoped<ITagRepository, TagRepository>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
-        
+
         return services;
     }
 
@@ -28,15 +28,15 @@ public static class InfrastructureStartup
     {
         var connectionString = configuration.GetConnectionString("DefaultConnection");
         builder.AddDbContext<ApplicationContext>(options => options.UseNpgsql(connectionString));
-        
+
         return builder;
     }
-    
+
     public static async Task UseInfrastructureAsync(this WebApplication app)
     {
         using var scope = app.Services.CreateScope();
         var db = scope.ServiceProvider.GetRequiredService<ApplicationContext>();
-        
+
         await db.Database.EnsureCreatedAsync();
     }
 }

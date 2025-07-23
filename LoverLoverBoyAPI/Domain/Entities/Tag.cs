@@ -3,5 +3,5 @@
 public class Tag : EntityBase
 {
     public string Name { get; set; }
-    public ICollection<TicketTags> TaskTags { get; set; } = new  List<TicketTags>();
+    public ICollection<TicketTags> TaskTags { get; set; } = new List<TicketTags>();
 }

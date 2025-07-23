@@ -11,7 +11,7 @@ public class RefreshTokenConfiguration : IEntityTypeConfiguration<RefreshToken>
         builder.ToTable("RefreshTokens");
 
         builder.HasKey(token => token.Token);
-        
+
         builder.Property(token => token.JwtId).IsRequired();
         builder.Property(token => token.ExpiresAt).IsRequired();
         builder.Property(token => token.Invalidated).IsRequired();

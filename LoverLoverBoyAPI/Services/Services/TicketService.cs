@@ -32,7 +32,7 @@ public class TicketService(IUnitOfWork unitOfWork, ILogger<TicketService> logger
         {
             ticket.AssignedUserId = requestDto.AssigneeId.Value;
         }
-        
+
         await unitOfWork.Tickets.UpdateAsync(ticket);
 
         return new TicketResponse(ticket.Id, ticket.Title, ticket.Description, ticket.Status, ticket.Deadline,
@@ -43,10 +43,10 @@ public class TicketService(IUnitOfWork unitOfWork, ILogger<TicketService> logger
     public async Task<GetAllResponse<TicketResponse>> GetAllAsync(GetAllRequest requestDto)
     {
         var query = unitOfWork.Tickets.GetAll()
-            .Select(ticket => new TicketResponse(ticket.Id, ticket.Title, ticket.Description,  ticket.Status, ticket.Deadline, ticket.AssignedUserId, ticket.ProjectId, ticket.TicketTags.Select(tag => new TagResponse(tag.Tag.Id, tag.Tag.Name))));
-        
+            .Select(ticket => new TicketResponse(ticket.Id, ticket.Title, ticket.Description, ticket.Status, ticket.Deadline, ticket.AssignedUserId, ticket.ProjectId, ticket.TicketTags.Select(tag => new TagResponse(tag.Tag.Id, tag.Tag.Name))));
+
         var count = query.Count();
-        
+
         query = query.Skip((requestDto.PageNumber - 1) * requestDto.PageSize).Take(requestDto.PageSize).Take(requestDto.PageSize);
 
         return new GetAllResponse<TicketResponse>()
@@ -68,7 +68,7 @@ public class TicketService(IUnitOfWork unitOfWork, ILogger<TicketService> logger
             {
                 throw new NotFoundException("Ticket now found");
             }
-            
+
             return new TicketResponse(ticket.Id, ticket.Title, ticket.Description, ticket.Status, ticket.Deadline,
                 ticket.AssignedUserId, ticket.ProjectId,
                 ticket.TicketTags.Select(tag => new TagResponse(tag.Tag.Id, tag.Tag.Name)));
@@ -92,7 +92,7 @@ public class TicketService(IUnitOfWork unitOfWork, ILogger<TicketService> logger
                 ProjectId = requestDto.ProjectId,
                 AssignedUserId = requestDto.AssignedUserId
             });
-            
+
             return new TicketResponse(ticket.Id, ticket.Title, ticket.Description, ticket.Status, ticket.Deadline,
                 ticket.AssignedUserId, ticket.ProjectId,
                 ticket.TicketTags.Select(tag => new TagResponse(tag.Tag.Id, tag.Tag.Name)));
@@ -114,15 +114,15 @@ public class TicketService(IUnitOfWork unitOfWork, ILogger<TicketService> logger
             {
                 throw new NotFoundException("Ticket now found");
             }
-            
+
             ticket.Title = requestDto.Title;
             ticket.Description = requestDto.Description;
             ticket.Deadline = requestDto.Deadline;
             ticket.AssignedUserId = requestDto.AssignedUserId;
             ticket.ProjectId = requestDto.ProjectId;
-            
+
             await unitOfWork.Tickets.UpdateAsync(ticket);
-            
+
             return new TicketResponse(ticket.Id, ticket.Title, ticket.Description, ticket.Status, ticket.Deadline,
                 ticket.AssignedUserId, ticket.ProjectId,
                 ticket.TicketTags.Select(tag => new TagResponse(tag.Tag.Id, tag.Tag.Name)));

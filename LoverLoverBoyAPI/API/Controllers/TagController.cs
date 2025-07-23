@@ -39,10 +39,10 @@ public class TagController(ITagService service) : ControllerBase
     public async Task<IActionResult> Post([FromBody] CreateTagRequest requestDto)
     {
         var result = await service.CreateAsync(requestDto);
-        
+
         return CreatedAtAction(nameof(Get), new { id = result.Id }, result);
     }
-    
+
     /// <summary>
     /// Обновление существующего тега
     /// </summary>
@@ -52,7 +52,7 @@ public class TagController(ITagService service) : ControllerBase
     [HttpPut("{id:guid}")]
     [ProducesResponseType(typeof(TagResponse), 200)]
     public async Task<IActionResult> Put(Guid id, [FromBody] UpdateTagRequest requestDto) => Ok(await service.UpdateAsync(id, requestDto));
-    
+
     /// <summary>
     /// Удаление тега
     /// </summary>

@@ -34,7 +34,7 @@ public class AuthService(
                 PasswordHash = hashedPassword,
             };
             await unitOfWork.Users.CreateAsync(user);
-            
+
             var (token, refreshToken) = await jwtService.GetNewAccessTokenWithRefreshAsync(user);
             return new AuthResponse(token, refreshToken);
 

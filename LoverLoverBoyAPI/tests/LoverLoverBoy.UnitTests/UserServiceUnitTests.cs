@@ -18,12 +18,12 @@ public class UserServiceUnitTests
     public UserServiceUnitTests()
     {
         var logger = new Mock<ILogger<UserService>>();
-        
+
         _userRepository = new Mock<IUserRepository>();
-        
+
         var unitOfWork = new Mock<IUnitOfWork>();
         unitOfWork.Setup(uow => uow.Users).Returns(_userRepository.Object);
-        
+
         _userService = new UserService(unitOfWork.Object, logger.Object);
     }
 
@@ -49,16 +49,16 @@ public class UserServiceUnitTests
                 PasswordHash = "afkmpafkmerkmferkmferkmnferknmf123213afjnjnk"
             });
         }
-        
+
         var mock = users.AsQueryable().BuildMock();
-        
+
         _userRepository
             .Setup(repo => repo.GetAll())
             .Returns(mock);
-        
+
         // Act
         var result = await _userService.GetAllAsync(request);
-        
+
         // Assert
         Assert.Equal(15, result.Data.Count());
     }
@@ -72,7 +72,7 @@ public class UserServiceUnitTests
             PageNumber = 0,
             PageSize = 0
         };
-        
+
         var users = new List<User>();
         for (var i = 0; i < 30; i++)
         {
@@ -84,17 +84,17 @@ public class UserServiceUnitTests
                 PasswordHash = "afkmpafkmerkmferkmferkmnferknmf123213afjnjnk"
             });
         }
-        
+
         var mock = users.AsQueryable()
             .BuildMock();
-        
+
         _userRepository
             .Setup(repo => repo.GetAll())
             .Returns(mock);
-        
+
         // Act
         var result = await _userService.GetAllAsync(request);
-        
+
         // Assert
         Assert.Equal(30, result.Data.Count());
     }
@@ -110,17 +110,17 @@ public class UserServiceUnitTests
             Login = "johnDoe",
             PasswordHash = "afkmpafkmerkmferkmferkmnferknmf123213afjnjnk"
         };
-        
+
         _userRepository
             .Setup(repo => repo.GetByIdAsync(user.Id))
             .ReturnsAsync(user);
-        
+
         // Act
 
         var result = await _userService.GetByIdAsync(user.Id);
-        
+
         // Assert
-        
+
         Assert.NotNull(result);
         Assert.Equal(user.Id, result.Id);
     }
@@ -134,7 +134,7 @@ public class UserServiceUnitTests
             Email = "invalid-email@example.com",
             Login = "invalidLogin",
         };
-        
+
         // Assert
         await Assert.ThrowsAsync<NotFoundException>(() => _userService.UpdateAsync(request));
     }
@@ -165,7 +165,7 @@ public class UserServiceUnitTests
             .Returns(Task.CompletedTask);
         // Act
         var result = await _userService.UpdateAsync(request);
-        
+
         // Assert
         Assert.NotNull(result);
         Assert.Equal("zheny2004", result.Login);
