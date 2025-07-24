@@ -4,7 +4,7 @@ public class GetAllRequest
 {
     private int _pageNumber = 1;
     private int _pageSize = 10;
-    
+
     public int PageSize
     {
         get => _pageSize;

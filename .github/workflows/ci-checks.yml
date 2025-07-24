@@ -1,0 +1,40 @@
+name: CI Checks
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '9.0.x'
+
+      - name: Restore dependencies
+        run: dotnet restore
+        working-directory: ./LoverLoverBoyAPI
+
+      - name: Check formatting
+        run: dotnet format --verify-no-changes
+        working-directory: ./LoverLoverBoyAPI
+        
+      - name: Build
+        run: dotnet build --no-restore --configuration Release
+        working-directory: ./LoverLoverBoyAPI
+        
+      - name: Run Unit Tests
+        run: dotnet test --no-build --configuration Release
+        working-directory: ./LoverLoverBoyAPI/tests/LoverLoverBoy.UnitTests
+        
+      - name: Run Integration Tests
+        run: dotnet test --no-build --configuration Release
+        working-directory: ./LoverLoverBoyAPI/tests/LoverLoverBoy.IntegrationTests

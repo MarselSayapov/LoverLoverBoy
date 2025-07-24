@@ -11,7 +11,7 @@ public class UnitOfWork(ApplicationContext context) : IUnitOfWork
     private IRefreshTokenRepository? _refreshTokenRepository;
     private ITagRepository? _tagRepository;
     private IProjectRepository? _projectRepository;
-    
+
     public void Dispose()
     {
         context.Dispose();

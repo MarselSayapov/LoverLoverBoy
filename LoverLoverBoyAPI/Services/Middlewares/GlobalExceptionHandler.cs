@@ -22,7 +22,7 @@ public class GlobalExceptionHandler : IExceptionHandler
         {
             exceptionResponse.Detail = exception.Message;
         }
-        
+
         await httpContext.Response.WriteAsJsonAsync(exceptionResponse, cancellationToken).ConfigureAwait(false);
         return true;
     }

@@ -6,7 +6,7 @@ public static class ApiStartup
     {
         services.AddOpenApi();
         services.AddControllers();
-        
+
         services.AddEndpointsApiExplorer();
     }
 

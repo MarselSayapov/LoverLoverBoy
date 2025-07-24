@@ -17,7 +17,7 @@ public class AuthController(IAuthService authService) : ControllerBase
     [HttpPost("register")]
     [ProducesResponseType(typeof(AuthResponse), 200)]
     public async Task<IActionResult> Register(RegisterRequest requestDto) => Ok(await authService.RegisterAsync(requestDto));
-    
+
     /// <summary>
     /// Авторизация пользователя
     /// </summary>

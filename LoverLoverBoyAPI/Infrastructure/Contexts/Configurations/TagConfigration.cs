@@ -9,9 +9,9 @@ public class TagConfigration : IEntityTypeConfiguration<Tag>
     public void Configure(EntityTypeBuilder<Tag> builder)
     {
         builder.ToTable("Tags");
-        
+
         builder.HasKey(tag => tag.Id);
-        
+
         builder.Property(tag => tag.Name).IsRequired();
     }
 }

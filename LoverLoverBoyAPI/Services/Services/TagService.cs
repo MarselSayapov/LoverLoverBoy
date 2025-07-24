@@ -19,9 +19,9 @@ public class TagService(IUnitOfWork unitOfWork, ILogger<TagService> logger) : IT
         {
             var query = unitOfWork.Tags.GetAll()
                 .Select(tag => new TagResponse(tag.Id, tag.Name));
-        
+
             var count = query.Count();
-        
+
             query = query.Skip((requestDto.PageNumber - 1) * requestDto.PageSize).Take(requestDto.PageSize);
 
             return new GetAllResponse<TagResponse>
@@ -49,7 +49,7 @@ public class TagService(IUnitOfWork unitOfWork, ILogger<TagService> logger) : IT
             {
                 throw new NotFoundException("Tag not found");
             }
-        
+
             return new TagResponse(tag.Id, tag.Name);
         }
         catch (Exception exception)
@@ -65,7 +65,7 @@ public class TagService(IUnitOfWork unitOfWork, ILogger<TagService> logger) : IT
         {
             Name = requestDto.Name
         });
-        
+
         return new TagResponse(tag.Id, tag.Name);
     }
 
@@ -77,9 +77,9 @@ public class TagService(IUnitOfWork unitOfWork, ILogger<TagService> logger) : IT
         {
             throw new NotFoundException("Tag not found");
         }
-        
+
         tag.Name = requestDto.Name;
-        
+
         await unitOfWork.Tags.UpdateAsync(tag);
 
         return new TagResponse(tag.Id, tag.Name);
@@ -93,7 +93,7 @@ public class TagService(IUnitOfWork unitOfWork, ILogger<TagService> logger) : IT
         {
             throw new NotFoundException("Tag not found");
         }
-        
+
         await unitOfWork.Tags.DeleteAsync(tag);
     }
 }

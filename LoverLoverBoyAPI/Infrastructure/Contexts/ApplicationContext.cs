@@ -14,7 +14,7 @@ public class ApplicationContext(DbContextOptions<ApplicationContext> options) : 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationContext).Assembly);
-        
+
         base.OnModelCreating(modelBuilder);
     }
 }

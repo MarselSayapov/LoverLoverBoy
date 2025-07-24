@@ -7,5 +7,5 @@ public class User : EntityBase
     public string Email { get; set; }
     public ICollection<Project> Projects { get; set; } = new List<Project>();
     public ICollection<Ticket> AssignedTickets { get; set; } = new List<Ticket>();
-    
+
 }

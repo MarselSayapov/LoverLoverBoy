@@ -10,5 +10,5 @@ public class Ticket : EntityBase
     public Project Project { get; set; }
     public Guid? AssignedUserId { get; set; }
     public User? AssignedUser { get; set; }
-    public ICollection<TicketTags>  TicketTags { get; set; } = new  List<TicketTags>();
+    public ICollection<TicketTags> TicketTags { get; set; } = new List<TicketTags>();
 }

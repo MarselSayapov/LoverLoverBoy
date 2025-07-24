@@ -44,7 +44,7 @@ public class JwtService(IOptions<AuthOptions> options, IUnitOfWork unitOfWork) :
         {
             throw new BadRequestException("Invalid token");
         }
-        
+
         var jti = validatedToken.Claims
             .FirstOrDefault(claim => claim.Type == JwtRegisteredClaimNames.Jti)?.Value;
 
@@ -52,7 +52,7 @@ public class JwtService(IOptions<AuthOptions> options, IUnitOfWork unitOfWork) :
         {
             throw new BadRequestException("Invalid token");
         }
-        
+
         var storedRefreshToken = await unitOfWork.RefreshTokens.GetByTokenAsync(refreshToken);
 
         if (storedRefreshToken is null)
@@ -69,7 +69,7 @@ public class JwtService(IOptions<AuthOptions> options, IUnitOfWork unitOfWork) :
         {
             throw new BadRequestException("This refresh token has been invalidated");
         }
-        
+
         var userId = validatedToken.Claims
             .FirstOrDefault(claim => claim.Type == ClaimTypes.NameIdentifier)?.Value;
 
@@ -77,17 +77,17 @@ public class JwtService(IOptions<AuthOptions> options, IUnitOfWork unitOfWork) :
         {
             throw new BadRequestException("Current user is not found");
         }
-        
+
         var user = await unitOfWork.Users.GetByIdAsync(Guid.Parse(userId));
 
         if (user is null)
         {
             throw new NotFoundException("This user does not exist");
         }
-        
+
         return await GenerateJwtAndRefreshTokenAsync(user, refreshToken);
     }
-    
+
     public Task<(string token, string refreshToken)> GetNewAccessTokenWithRefreshAsync(User user)
     {
         return GenerateJwtAndRefreshTokenAsync(user, null);
@@ -120,7 +120,7 @@ public class JwtService(IOptions<AuthOptions> options, IUnitOfWork unitOfWork) :
     {
         var token = GenerateToken(user.Login, user.Email, user.Id);
         var refreshToken = await GenerateRefreshTokenAsync(token, user, existingRefreshToken);
-        
+
         return (token, refreshToken);
     }
 
@@ -149,12 +149,12 @@ public class JwtService(IOptions<AuthOptions> options, IUnitOfWork unitOfWork) :
                 await unitOfWork.RefreshTokens.DeleteAsync(existingToken);
             }
         }
-        
+
         await unitOfWork.RefreshTokens.CreateAsync(refreshToken);
-        
+
         return refreshToken.Token;
     }
-    
+
     private TokenValidationParameters GetValidationParameters()
     {
         return new TokenValidationParameters
