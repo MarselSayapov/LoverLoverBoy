@@ -31,6 +31,10 @@ jobs:
         run: dotnet build --no-restore --configuration Release
         working-directory: ./LoverLoverBoyAPI
         
-      - name: Run tests
+      - name: Run Unit Tests
         run: dotnet test --no-build --verbosity normal
-        working-directory: ./LoverLoverBoyAPI
+        working-directory: ./LoverLoverBoyAPI/tests/LoverLoverBoy.UnitTests
+        
+      - name: Run Integration Tests
+        run: dotnet test --no-build --verbosity normal
+        working-directory: ./LoverLoverBoyAPI/tests/LoverLoverBoy.IntegrationTests
