@@ -20,13 +20,17 @@ jobs:
           dotnet-version: '9.0.x'
 
       - name: Restore dependencies
-        run: dotnet restore LoverLoverBoy.sln
+        run: dotnet restore
+        working-directory: ./LoverLoverBoyAPI
 
       - name: Check formatting
-        run: dotnet format LoverLoverBoy.sln --verify-no-changes
+        run: dotnet format --verify-no-changes
+        working-directory: ./LoverLoverBoyAPI
         
       - name: Build
-        run: dotnet build LoverLoverBoy.sln --no-restore --configuration Release
+        run: dotnet build --no-restore --configuration Release
+        working-directory: ./LoverLoverBoyAPI
         
       - name: Run tests
-        run: dotnet test LoverLoverBoy.sln --no-build --verbosity normal
+        run: dotnet test --no-build --verbosity normal
+        working-directory: ./LoverLoverBoyAPI
